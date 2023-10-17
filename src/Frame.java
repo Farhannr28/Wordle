@@ -190,7 +190,20 @@ public class Frame extends JFrame{
         this.setVisible(true);
     }
     
-    public static void init(){ //every gamestart
-        
+    public static void init(){ //every gamestart, reset colors of boxes and keys
+        for(int i=1; i<=6; i++){
+            for (int j=1; j<=5; j++){
+                boxes[i][j].setBackground(backgroundColor);
+                boxes[i][j].setBorder(BorderFactory.createLineBorder(Darker, 4));
+            }
+        }
+        keys[0].setBackground(keyBorder);
+        keys[0].setBorder(BorderFactory.createLineBorder(keyBorder, 4));
+        for(int i=1; i<27; i++){
+            keys[i].setBackground(keyBorder);
+            keys[i].setBorder(BorderFactory.createLineBorder(keyBorder, 4));
+        }
+        keys[27].setBackground(keyBorder);
+        keys[27].setBorder(BorderFactory.createLineBorder(keyBorder, 4));
     }
 }
