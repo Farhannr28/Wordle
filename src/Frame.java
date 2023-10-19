@@ -7,11 +7,9 @@ import java.awt.GridLayout;
 public class Frame extends JFrame{
     static Color backgroundColor = new Color(20,20,20);
     static Color keyBorder = new Color(110,110,110);
-    static Color Darker = new Color(45,45,45);
-
+    static Color Darker = new Color(40,40,40);
 
     static JButton[] keys = new JButton[28];
-    static JButton[][] boxes = new JButton[7][6];
 
     static JPanel keyboard1, keyboard2, keyboard3, keyboardE, keyboardB;
     static JPanel boxesPanel;
@@ -156,23 +154,10 @@ public class Frame extends JFrame{
         keyboardB.add(keys[0]);
 
         boxesPanel = new JPanel();
-        boxesPanel.setBounds(95, 70, 400, 450);
+        boxesPanel.setBounds(95, 75, 400, 450);
         boxesPanel.setBackground(backgroundColor);
         boxesPanel.setLayout(null);
         boxesPanel.setLayout(new GridLayout(6, 5, 6, 5));
-        
-        for(int i=1; i<=6; i++){
-            for (int j=1; j<=5; j++){
-                boxes[i][j] = new JButton();
-                boxes[i][j].setFont(new Font("Arial", Font.PLAIN, 23));
-                boxes[i][j].setForeground(Color.WHITE);
-                boxes[i][j].setBackground(backgroundColor);
-                boxes[i][j].setFocusable(false);
-                boxes[i][j].setBorder(BorderFactory.createLineBorder(Darker, 4));
-                boxes[i][j].setEnabled(false);
-                boxesPanel.add(boxes[i][j]);
-            }
-        }
 
         this.setTitle("Wordle");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -190,13 +175,7 @@ public class Frame extends JFrame{
         this.setVisible(true);
     }
     
-    public static void init(){ //every gamestart, reset colors of boxes and keys
-        for(int i=1; i<=6; i++){
-            for (int j=1; j<=5; j++){
-                boxes[i][j].setBackground(backgroundColor);
-                boxes[i][j].setBorder(BorderFactory.createLineBorder(Darker, 4));
-            }
-        }
+    public void init(){ //every gamestart, reset colors of keys
         keys[0].setBackground(keyBorder);
         keys[0].setBorder(BorderFactory.createLineBorder(keyBorder, 4));
         for(int i=1; i<27; i++){
