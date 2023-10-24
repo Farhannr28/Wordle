@@ -10,7 +10,7 @@ public class WordList {
     static int size = 11790;
     public static int[][] trie = new int[size][26];
 
-    public static void memset(){
+    static void memset(){
         for (int i=0; i<size; i++){
             for (int j=0; j<26; j++){
                 trie[i][j] = -1;
@@ -18,7 +18,7 @@ public class WordList {
         }
     }
 
-    public static void insert(String str){
+    static void insert(String str){
         int c;
         int node = 0;
         for (int i=0; i<4; i++){
@@ -33,7 +33,7 @@ public class WordList {
         trie[node][c] = 0;
     }
 
-    public static boolean search(String str){
+    static boolean search(String str){
         int c;
         int node = 0;
         for (int i=0; i<5; i++){
@@ -49,13 +49,12 @@ public class WordList {
         return false;
     }
 
-    public static void read(){
+    static void read(){
         String word;
         try{
             sc = new Scanner(new File("res/allowed_words.txt"));
             while (sc.hasNextLine()){
                 word = sc.nextLine();
-                // System.out.println(word);
                 insert(word);
             }
             sc.close();

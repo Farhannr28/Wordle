@@ -3,8 +3,12 @@ import javax.swing.*;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class Frame extends JFrame{
+public class Frame extends JFrame implements ActionListener, KeyListener{
     static Color backgroundColor = new Color(20,20,20);
     static Color keyBorder = new Color(110,110,110);
     static Color Darker = new Color(40,40,40);
@@ -15,6 +19,7 @@ public class Frame extends JFrame{
     static JPanel boxesPanel;
 
     Frame(){
+        this.addKeyListener(this);
         JLabel label = new JLabel();
         label.setText("Wordle");
         label.setForeground(Color.WHITE);
@@ -111,18 +116,21 @@ public class Frame extends JFrame{
         keys[0].setBackground(keyBorder);
         keys[0].setFocusable(false);
         keys[0].setBorder(BorderFactory.createLineBorder(keyBorder, 4));
+        keys[0].addActionListener(this);
         for(int i=1; i<27; i++){
             keys[i].setFont(new Font("Arial", Font.PLAIN, 23));
             keys[i].setForeground(Color.WHITE);
             keys[i].setBackground(keyBorder);
             keys[i].setFocusable(false);
             keys[i].setBorder(BorderFactory.createLineBorder(keyBorder, 4));
+            keys[i].addActionListener(this);
         }
         keys[27].setFont(new Font("Arial", Font.PLAIN, 18));
         keys[27].setForeground(Color.WHITE);
         keys[27].setBackground(keyBorder);
         keys[27].setFocusable(false);
         keys[27].setBorder(BorderFactory.createLineBorder(keyBorder, 4));
+        keys[27].addActionListener(this);
 
         keyboard1.add(keys[17]);
         keyboard1.add(keys[23]);
@@ -174,7 +182,7 @@ public class Frame extends JFrame{
         this.add(boxesPanel);
         this.setVisible(true);
     }
-    
+
     public void init(){ //every gamestart, reset colors of keys
         keys[0].setBackground(keyBorder);
         keys[0].setBorder(BorderFactory.createLineBorder(keyBorder, 4));
@@ -185,4 +193,70 @@ public class Frame extends JFrame{
         keys[27].setBackground(keyBorder);
         keys[27].setBorder(BorderFactory.createLineBorder(keyBorder, 4));
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e){
+        for (int i=1; i<27; i++){
+            if (e.getSource() == keys[i]){
+                if (Wordle.input.length() < 5){
+                    Wordle.input += Character.toString(i + 96);
+                    Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].letter = String.valueOf(Wordle.input.charAt(Wordle.input.length()-1));
+                    Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].update();
+                }
+            }
+        }
+        if (e.getSource() == keys[0]){
+            if (Wordle.input.length() > 0){
+                Wordle.input = Wordle.input.substring(0, Wordle.input.length()-1);
+                Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()].letter = String.valueOf(' ');
+                Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()].update();
+            }
+        }
+        if (e.getSource() == keys[27]){
+            if (Wordle.input.length() < 5){
+                // output "Not enough letters" message
+            } else {
+                if (WordList.search(Wordle.input)){
+                    Wordle.word = Wordle.input;
+                } else {
+                    // output "Not in word list" message
+                }
+            }
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e){}
+
+    @Override
+    public void keyPressed(KeyEvent e){
+        if (e.getKeyCode()==8){
+            if (Wordle.input.length() > 0){
+                Wordle.input = Wordle.input.substring(0, Wordle.input.length()-1);
+                Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()].letter = String.valueOf(' ');
+                Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()].update();
+            }
+        } else if (e.getKeyCode()==10) {
+            if (Wordle.input.length() < 5){
+                // output "Not enough letters" message
+            } else {
+                if (WordList.search(Wordle.input)){
+                    Wordle.word = Wordle.input;
+                } else {
+                    // output "Not in word list" message
+                }
+            }
+        } else {
+            if (65 <= e.getKeyCode() && e.getKeyCode() <= 90){
+                if (Wordle.input.length() < 5){
+                    Wordle.input += (char) (e.getKeyCode()+32);
+                    Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].letter = String.valueOf(Wordle.input.charAt(Wordle.input.length()-1));
+                    Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].update();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e){}
 }
