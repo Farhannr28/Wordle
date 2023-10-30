@@ -68,24 +68,4 @@ public class WordList {
         avail = 1;
         read();
     }
-
-    /*
-    public static void main(String args[]){
-        memset();
-        avail = 1;
-        read();
-
-        int last = 0;
-        for (int i=0; i<size; i++){
-            for (int j=0; j<26; j++){
-                // System.out.print(trie[i][j] + " ");
-                if (trie[i][j] != -1){
-                    last = i;
-                }
-            }
-            // System.out.println("\n");
-        }
-        System.out.println(last);
-    }
-    */
 }

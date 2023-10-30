@@ -35,6 +35,32 @@ public class AnswerList {
         }
     }
 
+    public static char[] checkAnswer(String s, String ans){
+        char[] ret = new char[5];
+        boolean[] checked = new boolean[5];
+        for (int i=0; i<5; i++){
+            checked[i] = false;
+            ret[i] = 'd';
+        }
+        for (int i=0; i<5; i++){
+            if (s.charAt(i) ==  ans.charAt(i)){
+                ret[i] = 'g';
+                checked[i] = true;
+            }
+        }
+        for (int i=0; i<5; i++){
+            if (ret[i] != 'g'){
+                for (int j=0; j<5; j++){
+                    if ((s.charAt(i) ==  ans.charAt(j)) && (!checked[j])){
+                        ret[i] = 'y';
+                        checked[j] = true;
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
     AnswerList(){
         read();
         shuffle();

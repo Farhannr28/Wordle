@@ -10,46 +10,51 @@ import java.awt.event.KeyListener;
 
 public class Frame extends JFrame implements ActionListener, KeyListener{
     static Color backgroundColor = new Color(20,20,20);
-    static Color keyBorder = new Color(110,110,110);
+    static Color keyBorder = new Color(120,120,120);
     static Color Darker = new Color(40,40,40);
+    static Color Green = new Color(88,149,81);
+    static Color Yellow = new Color(180,162,63);
+    static Color Red = new Color(149, 88, 81);
 
     static JButton[] keys = new JButton[28];
 
     static JPanel keyboard1, keyboard2, keyboard3, keyboardE, keyboardB;
     static JPanel boxesPanel;
+    static JPanel messagePanel;
+    static JLabel messageLabel;
 
     Frame(){
         this.addKeyListener(this);
-        JLabel label = new JLabel();
-        label.setText("Wordle");
-        label.setForeground(Color.WHITE);
-        label.setFont(new Font("Arial", Font.BOLD, 36));
-        label.setHorizontalAlignment(JLabel.CENTER);
-        label.setVerticalAlignment(JLabel.CENTER);
-        label.setBounds(200, 0, 200, 80);
+        JLabel titleLabel = new JLabel();
+        titleLabel.setText("Wordle");
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLabel.setHorizontalAlignment(JLabel.CENTER);
+        titleLabel.setVerticalAlignment(JLabel.CENTER);
+        titleLabel.setBounds(200, 0, 200, 80);
 
         keyboard1 = new JPanel();
-        keyboard1.setBounds(45, 560, 495, 75);
+        keyboard1.setBounds(45, 600, 495, 75);
         keyboard1.setBackground(backgroundColor);
         keyboard1.setLayout(new GridLayout(1, 10, 5, 0));
 
         keyboard2 = new JPanel();
-        keyboard2.setBounds(67, 640, 450, 75);
+        keyboard2.setBounds(67, 680, 450, 75);
         keyboard2.setBackground(backgroundColor);
         keyboard2.setLayout(new GridLayout(1, 9, 5, 0));
 
         keyboard3 = new JPanel();
-        keyboard3.setBounds(116, 720, 350, 75);
+        keyboard3.setBounds(116, 760, 350, 75);
         keyboard3.setBackground(backgroundColor);
         keyboard3.setLayout(new GridLayout(1, 7, 5, 0));
 
         keyboardE = new JPanel();
-        keyboardE.setBounds(44, 720, 70, 75);
+        keyboardE.setBounds(44, 760, 70, 75);
         keyboardE.setBackground(backgroundColor);
         keyboardE.setLayout(new GridLayout(1, 1, 5, 0));
 
         keyboardB = new JPanel();
-        keyboardB.setBounds(468, 720, 70, 75);
+        keyboardB.setBounds(468, 760, 70, 75);
         keyboardB.setBackground(backgroundColor);
         keyboardB.setLayout(new GridLayout(1, 7, 5, 0));
 
@@ -162,33 +167,167 @@ public class Frame extends JFrame implements ActionListener, KeyListener{
         keyboardB.add(keys[0]);
 
         boxesPanel = new JPanel();
-        boxesPanel.setBounds(95, 75, 400, 450);
+        boxesPanel.setBounds(95, 80, 400, 460);
         boxesPanel.setBackground(backgroundColor);
         boxesPanel.setLayout(null);
         boxesPanel.setLayout(new GridLayout(6, 5, 6, 5));
 
+        JPanel messagePanel = new JPanel();
+        messagePanel.setBounds(50, 550, 500, 40);
+        messagePanel.setBackground(backgroundColor);
+
+        messageLabel = new JLabel("");
+        messageLabel.setFont(new Font("Arial", Font.PLAIN, 25));
+        messageLabel.setHorizontalAlignment(JLabel.CENTER);
+        messageLabel.setVerticalAlignment(JLabel.CENTER);
+        messageLabel.setVisible(false);
+
+        messagePanel.add(messageLabel);
+
         this.setTitle("Wordle");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(600, 850);
+        this.setSize(600, 900);
         this.setLayout(null);
         this.setResizable(false);
         this.getContentPane().setBackground(backgroundColor); 
-        this.add(label);
+        this.add(titleLabel);
         this.add(keyboard1);
         this.add(keyboard2);
         this.add(keyboard3);
         this.add(keyboardE);
         this.add(keyboardB);
         this.add(boxesPanel);
+        this.add(messagePanel);
         this.setVisible(true);
     }
 
-    public void init(){ //every gamestart, reset colors of keys
+    public void notInListMessage(){
+        messageLabel.setText("Not in word list");
+        messageLabel.setForeground(Color.WHITE);
+        messageLabel.setVisible(true);
+        for (int i=0; i<5; i++){
+            Wordle.guessBoxes[Wordle.guessNum][i].shakeButton();
+        }
+        Timer timer = new Timer(1500, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                messageLabel.setVisible(false);
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+        return;
+    }
+
+    public void notEnoughMessage(){
+        messageLabel.setText("Not enough letters");
+        messageLabel.setForeground(Color.WHITE);
+        messageLabel.setVisible(true);
+        for (int i=0; i<5; i++){
+            Wordle.guessBoxes[Wordle.guessNum][i].shakeButton();
+        }
+        Timer timer = new Timer(1500, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                messageLabel.setVisible(false);
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+        return;
+    }
+
+    public static void winMessage(){
+        messageLabel.setForeground(Color.WHITE);
+        switch(Wordle.guessNum){
+            case 0:
+                messageLabel.setText("Genius!");
+                break;
+            case 1:
+                messageLabel.setText("Magnificent!");
+                break;
+            case 2:
+                messageLabel.setText("Impressive!");
+                break;
+            case 3:
+                messageLabel.setText("Splendid!");
+                break;
+            case 4:
+                messageLabel.setText("Great!");
+                break;
+            case 5:
+                messageLabel.setText("Phew!");
+                break;
+        }
+        messageLabel.setVisible(true);
+        Timer timer = new Timer(3250, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                messageLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+                messageLabel.setForeground(keyBorder);
+                messageLabel.setText("Press the spacebar to play again");
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+        return;
+    }
+
+    public static void revealAnswer(){
+        messageLabel.setForeground(Color.WHITE);
+        messageLabel.setText("The answer is " + Wordle.answer);
+        messageLabel.setVisible(true);
+        Timer timer = new Timer(3250, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                messageLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+                messageLabel.setForeground(keyBorder);
+                messageLabel.setText("Press the spacebar to play again");
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+        return;
+    }
+
+    public static void keyUpdate(){
+        Timer timer = new Timer(250, new ActionListener(){
+            int idx;
+            int i=0;
+            @Override
+            public void actionPerformed(ActionEvent e){
+                if (i < 5){
+                    idx = (Wordle.input.charAt(i) - 'a') + 1;
+                    if (Wordle.status[i] == 'd' && keys[idx].getBackground() == keyBorder){
+                        keys[idx].setBackground(Darker);
+                        keys[idx].setBorder(BorderFactory.createLineBorder(Darker));
+                        keys[idx].setEnabled(false);
+                    } else if (Wordle.status[i] == 'y' && keys[idx].getBackground() == keyBorder){
+                        keys[idx].setBackground(Yellow);
+                        keys[idx].setBorder(BorderFactory.createLineBorder(Yellow));
+                    } else if (Wordle.status[i] == 'g' && keys[idx].getBackground() == keyBorder){
+                        keys[idx].setBackground(Green);
+                        keys[idx].setBorder(BorderFactory.createLineBorder(Green));
+                    }
+                    i++;
+                } else {
+                    Wordle.input = "";
+                    ((Timer) e.getSource()).stop();
+                }
+            }
+        });
+        timer.start();
+    }
+
+    public void init(){ //every gamestart, reset colors of keys and hide label
+        messageLabel.setVisible(false);
+        messageLabel.setFont(new Font("Arial", Font.PLAIN, 25));
         keys[0].setBackground(keyBorder);
         keys[0].setBorder(BorderFactory.createLineBorder(keyBorder, 4));
         for(int i=1; i<27; i++){
             keys[i].setBackground(keyBorder);
             keys[i].setBorder(BorderFactory.createLineBorder(keyBorder, 4));
+            keys[i].setEnabled(true);
         }
         keys[27].setBackground(keyBorder);
         keys[27].setBorder(BorderFactory.createLineBorder(keyBorder, 4));
@@ -201,7 +340,9 @@ public class Frame extends JFrame implements ActionListener, KeyListener{
                 if (Wordle.input.length() < 5){
                     Wordle.input += Character.toString(i + 96);
                     Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].letter = String.valueOf(Wordle.input.charAt(Wordle.input.length()-1));
-                    Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].update();
+                    Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].letter = Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].letter.toUpperCase();
+                    Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].button.setBorder(BorderFactory.createLineBorder(keyBorder, 4));
+                    Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].updateLetter();
                 }
             }
         }
@@ -209,17 +350,18 @@ public class Frame extends JFrame implements ActionListener, KeyListener{
             if (Wordle.input.length() > 0){
                 Wordle.input = Wordle.input.substring(0, Wordle.input.length()-1);
                 Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()].letter = String.valueOf(' ');
-                Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()].update();
+                Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()].button.setBorder(BorderFactory.createLineBorder(Darker, 4));
+                Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()].updateLetter();
             }
         }
         if (e.getSource() == keys[27]){
             if (Wordle.input.length() < 5){
-                // output "Not enough letters" message
+                notEnoughMessage();
             } else {
                 if (WordList.search(Wordle.input)){
-                    Wordle.word = Wordle.input;
+                    Wordle.guessEntered();
                 } else {
-                    // output "Not in word list" message
+                    notInListMessage();
                 }
             }
         }
@@ -234,24 +376,31 @@ public class Frame extends JFrame implements ActionListener, KeyListener{
             if (Wordle.input.length() > 0){
                 Wordle.input = Wordle.input.substring(0, Wordle.input.length()-1);
                 Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()].letter = String.valueOf(' ');
-                Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()].update();
+                Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()].button.setBorder(BorderFactory.createLineBorder(Darker, 4));
+                Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()].updateLetter();
             }
         } else if (e.getKeyCode()==10) {
             if (Wordle.input.length() < 5){
-                // output "Not enough letters" message
+                notEnoughMessage();
             } else {
                 if (WordList.search(Wordle.input)){
-                    Wordle.word = Wordle.input;
+                    Wordle.guessEntered();
                 } else {
-                    // output "Not in word list" message
+                    notInListMessage();
                 }
+            }
+        } else if (e.getKeyCode()==32) {
+            if (Wordle.over){
+                Wordle.gameStart();
             }
         } else {
             if (65 <= e.getKeyCode() && e.getKeyCode() <= 90){
                 if (Wordle.input.length() < 5){
                     Wordle.input += (char) (e.getKeyCode()+32);
                     Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].letter = String.valueOf(Wordle.input.charAt(Wordle.input.length()-1));
-                    Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].update();
+                    Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].letter = Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].letter.toUpperCase();
+                    Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].button.setBorder(BorderFactory.createLineBorder(keyBorder, 4));
+                    Wordle.guessBoxes[Wordle.guessNum][Wordle.input.length()-1].updateLetter();
                 }
             }
         }
